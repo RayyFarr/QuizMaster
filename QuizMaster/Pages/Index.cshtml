@@ -1,0 +1,10 @@
+﻿@page
+@using QuizMaster.Components;
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="text-center">
+@(await Html.RenderComponentAsync<Quiz>(RenderMode.ServerPrerendered));
+</div>

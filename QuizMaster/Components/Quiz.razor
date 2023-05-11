@@ -1,0 +1,25 @@
+﻿@using Microsoft.AspNetCore.Components.Web
+@using QuizMaster.Models
+@using QuizMaster.Services
+
+@inject JsonFileQuestionService QuestionService
+
+<div>
+	<h2>@currentQuestion.Question</h2>
+	@foreach (string answer in currentQuestion.Answers)
+	{
+		<button>answer</button>
+	}
+	<h3>Contributor : @currentQuestion.Contributor</h3>
+</div>
+
+@code {
+	int currentQuestionIndex = 0;
+	QuestionModel? currentQuestion;
+	int selectedAnswer;
+
+	public void SetQuestion()
+	{
+		currentQuestion = QuestionService.GetQuestions()[currentQuestionIndex];
+	}
+}
