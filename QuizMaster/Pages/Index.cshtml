@@ -5,6 +5,6 @@
     ViewData["Title"] = "Home page";
 }
 
-<div class="text-center">
-@(await Html.RenderComponentAsync<Quiz>(RenderMode.ServerPrerendered));
-</div>
+@(await Html.RenderComponentAsync<Quiz>(RenderMode.ServerPrerendered))
+
+<script src="_framework/blazor.server.js"></script>

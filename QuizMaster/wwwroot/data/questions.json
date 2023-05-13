@@ -5,10 +5,12 @@
         "Answers": [
             "Bjarne Stoustrup",
             "Denis Ritchie",
-            "Alan Turing",
-            "DHH"
+            "James Gosling",
+            "Charles Moore",
+            "Dahl",
+            "Nygaard"
         ],
-        "AnswerIndex": 2,
+        "AnswerIndex": 1,
         "Hint": "Not alive",
         "Contributor": "Farsit",
         "Ratings": null
@@ -20,10 +22,25 @@
             "Low-Level",
             "Intermediate-Level",
             "High-Level",
-            "Assembly Level"
+            "Assembly-Level",
+            "Human-Friendly"              
         ],
-        "AnswerIndex": 3,
+        "AnswerIndex": 2,
         "Hint": "The answers are not in order",
+        "Contributor": "Farsit",
+        "Ratings": null
+    },
+    {
+        "Id": "ITBL4TE",
+        "Question": "What is Big O notation",
+        "Answers": [
+            "Algorithm Complexity",
+            "Algorithm Frequency",
+            "Program Oriententation",
+            "Object Name"
+        ],
+        "AnswerIndex": 0,
+        "Hint": "Property of an algorithm. expressed as O(n).",
         "Contributor": "Farsit",
         "Ratings": null
     }

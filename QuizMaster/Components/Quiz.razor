@@ -3,23 +3,94 @@
 @using QuizMaster.Services
 
 @inject JsonFileQuestionService QuestionService
-
-<div>
-	<h2>@currentQuestion.Question</h2>
-	@foreach (string answer in currentQuestion.Answers)
-	{
-		<button>answer</button>
+<div class="quiz-div">
+	@{
+		SetQuestion();
 	}
-	<h3>Contributor : @currentQuestion.Contributor</h3>
+	<div class="question-div">@currentQuestion.Question</div>
+	<div class="answer-div">
+
+		@for (int i = 0; i < currentQuestion.Answers.Length; i++)
+		{
+			string c = "answer-button";
+			var currentIndex = i;
+			if (answered)
+			{
+				if (currentIndex == selectedAnswer && currentIndex == currentQuestion.AnswerIndex) c += " correct";
+				else if (currentIndex == currentQuestion.AnswerIndex) c += " correct";
+				else if (currentIndex == selectedAnswer) c += " wrong";
+				else c += " remove";
+			}
+			<button class=@c @onclick="(e=>Answer(currentIndex))">
+				<span class="button-text">@currentQuestion.Answers[i]</span>
+			</button>
+
+		}
+
+	</div>
+	@if (!showHint)
+	{
+		<div class="hint-div">
+			<span>Hint</span>
+			<button class="dropdown-toggle" @onclick="e=>UseHint()"></button>
+		</div>
+	}
+	else
+	{
+		<div class="hint-div activated">
+			<span>Hint</span>
+			<button class="dropdown-toggle" @onclick="e=>UseHint()"></button>
+		</div>
+	}
+	@if (showHint)
+	{
+		<div class="hint">
+			@currentQuestion.Hint
+		</div>
+	}
 </div>
+<div class="quiz-footer">
+	<div class="quiz-footer-div">
+		<p>Time left : 15s</p>
+		<p>Contributor : @currentQuestion.Contributor</p>
+		<p>Hints left : @hints</p>
+		<button @onclick="Submit">Submit</button>
+	</div>
+</div>
+
 
 @code {
 	int currentQuestionIndex = 0;
 	QuestionModel? currentQuestion;
-	int selectedAnswer;
-
-	public void SetQuestion()
+	List<int> answersIndices = new List<int>();
+	int selectedAnswer = 0;
+	bool answered = false;
+	int hints = 3;
+	bool showHint = false;
+	void SetQuestion()
 	{
 		currentQuestion = QuestionService.GetQuestions()[currentQuestionIndex];
+	}
+	void Answer(int answerIndex)
+	{
+		if (answered) return;
+		answered = true;
+		answersIndices.Add(answerIndex);
+		selectedAnswer = answerIndex;
+	}
+	void UseHint()
+	{
+		if (showHint || hints < 1)
+			return;
+		showHint = true;
+		hints--;
+
+	}
+	void Submit()
+	{
+		if (!answered) return;
+		answered = false;
+		currentQuestionIndex++;
+		SetQuestion();
 	}
 }
