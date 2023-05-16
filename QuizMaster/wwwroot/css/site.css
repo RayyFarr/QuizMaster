@@ -169,6 +169,42 @@ body {
     float: right;
 }
 
+
+
+.editor {
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #353b48;
+    display: grid;
+    grid-template-columns: auto auto auto;
+}
+.editable-question {
+    padding: 20px;
+    margin: 10px;
+    min-height: 500px;
+    float: left;
+    border-radius:10px;
+    background-color: #00a8ff;
+}
+.editor-header {
+    width: 100%;
+    color: #f5f6fa;
+    font-size: 3rem;
+    background-color: #192a56;
+    height: fit-content;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+}
+    .editor-header h3 {
+        background-color: #44bd32;
+        margin:0 auto;
+        padding:10px;
+        font-size:3rem;
+        text-align:center;
+        border-radius: 10px;
+    }
 @media (min-width: 768px) {
     html {
         font-size: 16px;

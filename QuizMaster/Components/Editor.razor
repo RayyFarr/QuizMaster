@@ -1,0 +1,40 @@
+﻿@using Microsoft.AspNetCore.Components.Web
+
+@using QuizMaster.Models
+@using QuizMaster.Services
+
+@inject JsonFileQuestionService QuestionService
+
+@{
+	SetQuestions();
+}
+<div class="editor-header"><h3>Editor</h3></div>
+<div class="editor">
+	<div>
+		@foreach (QuestionModel question in questions)
+		{
+			<div class="editable-question">
+				<p>Id : @question.Id</p>
+				<p>Question : @question.Question</p>
+				<p>
+					Answers:
+					@foreach(string s in question.Answers)
+					{
+						<p>@s</p>
+					}
+				</p>
+				<p>Correct Answer : @question.Answers[question.AnswerIndex]</p>
+				<p>Contributor : @question.Contributor</p>
+			</div>
+		}
+	</div>
+</div>
+
+@code {
+	IEnumerable<QuestionModel> questions;
+
+	void SetQuestions()
+	{
+		questions = QuestionService.GetQuestions();
+	}
+}
