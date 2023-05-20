@@ -14,17 +14,21 @@
 		{
 			<form>
 				<div class="editable-question">
-					<textarea>Id : @question.Id</textarea>
-					<textarea>Question : @question.Question</textarea>
-					<textarea>
-						Answers:
-						@foreach (string s in question.Answers)
-						{
+					<h3>Id :</h3>
+					<textarea>@question.Id</textarea>
+					<h3>Question :</h3>
+					<textarea>@question.Question</textarea>
+					<h3>Answers :</h3>
+					@foreach (string s in question.Answers)
+					{
 						<textarea>@s</textarea>
-						}
-					</textarea>
-					<textarea>Correct Answer : @question.Answers[question.AnswerIndex]</textarea>
-					<textarea>Contributor : @question.Contributor</textarea>
+					}
+					<h3>Add a question :</h3>
+					<textarea></textarea>
+					<h3>Correct Answer Index :</h3>
+					<textarea >@question.AnswerIndex</textarea>
+					<h3>Contributor :</h3>
+					<textarea>@question.Contributor</textarea>
 				</div>
 			</form>
 		}
