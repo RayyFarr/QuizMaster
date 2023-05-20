@@ -6,6 +6,8 @@
 @{
 	SetQuestion();
 }
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
 @if (!finished)
 {
 	<div class="quiz-div">
@@ -70,11 +72,33 @@
 	</div>
 	<div class="quiz-footer">
 		<div class="quiz-footer-div">
-			<p>
-				Time left : 15s
-				Contributor : @currentQuestion.Contributor
-				Hints left : @hints
-			</p>
+			<span class="rate">
+				<span class="rate=text">
+				@if (voteCount == 0)
+				{
+					<span>Be the first to vote!</span>
+				}
+				else
+				{
+					<span>@voteCount @voteLabel</span>
+				}
+				</span>
+				<span class="stars">
+				@for (int i = 1; i < 6; i++)
+				{
+					var currentStar = i;
+					if (i <= currentRating)
+					{
+						<span class="fa-star fa checked" @onclick="(e => SubmitRating(currentStar))"></span>
+					}
+					else
+					{
+						<span class="fa-star fa" @onclick="(e => SubmitRating(currentStar))"></span>
+
+					}
+				}
+				</span>
+			</span>
 			<button @onclick="Submit">Submit</button>
 		</div>
 	</div>
@@ -107,56 +131,85 @@ else
 }
 
 @code {
-		int currentQuestionIndex = 0;
-		QuestionModel[]? questions;
-		QuestionModel? currentQuestion;
-		List<int> answersIndices = new List<int>();
-		int selectedAnswer = 0;
-		bool answered = false;
-		int hints = 3;
-		bool showHint = false;
-		bool finished;
-		void SetQuestion()
-		{
-			questions = QuestionService.GetQuestions();
-			currentQuestion = questions[currentQuestionIndex];
-		}
-		void Answer(int answerIndex)
-		{
-			if (answered) return;
-			answered = true;
-			answersIndices.Add(answerIndex);
-			selectedAnswer = answerIndex;
-		}
-		void UseHint()
-		{
-			if (showHint || hints < 1)
-				return;
-			showHint = true;
-			hints--;
+	int currentQuestionIndex = 0;
+	QuestionModel[]? questions;
+	QuestionModel? currentQuestion;
+	List<int> answersIndices = new List<int>();
+	int selectedAnswer = 0;
+	bool answered = false;
+	int hints = 3;
+	bool showHint = false;
+	bool finished;
+	void SetQuestion()
+	{
+		voted = false;
+		questions = QuestionService.GetQuestions();
+		currentQuestion = questions[currentQuestionIndex];
+		GetCurrentRating();
+	}
+	void Answer(int answerIndex)
+	{
+		if (answered) return;
+		answered = true;
+		answersIndices.Add(answerIndex);
+		selectedAnswer = answerIndex;
+	}
+	void UseHint()
+	{
+		if (showHint || hints < 1)
+			return;
+		showHint = true;
+		hints--;
 
-		}
-		void Submit()
+	}
+	void Submit()
+	{
+		if (!answered) return;
+		answered = false;
+		showHint = false;
+		if (answersIndices.Count == questions.Length)
 		{
-			if (!answered) return;
-			answered = false;
-			showHint = false;
-			if (answersIndices.Count == questions.Length)
-			{
-				finished = true;
-				return;
-			}
-			currentQuestionIndex++;
+			finished = true;
+			return;
+		}
+		currentQuestionIndex++;
+		SetQuestion();
+	}
+	int CorrectAnswers()
+	{
+		int sum = 0;
+		for (int i = 0; i < answersIndices.Count; i++)
+		{
+			if (answersIndices[i] == questions[i].AnswerIndex)
+				sum += 1;
+		}
+		return sum;
+	}
+	int currentRating = 0;
+	int voteCount = 0;
+	bool voted = false;
+	string voteLabel;
+
+	void GetCurrentRating()
+	{
+		if (currentQuestion.Ratings == null)
+		{
+			currentRating = 0;
+			voteCount = 0;
+		}
+		else
+		{
+			voteCount = currentQuestion.Ratings.Count();
+			voteLabel = voteCount > 1 ? "Votes" : "Vote";
+			currentRating = (int)Math.Ceiling(Enumerable.Average(currentQuestion.Ratings));
+		}
+	}
+	void SubmitRating(int rating)
+	{
+		if (voted) return;
+		voted = true;
+			QuestionService.AddRating(currentQuestion.Id, rating);
 			SetQuestion();
-		}
-		int CorrectAnswers()
-		{
-			int sum = 0;
-			for (int i = 0; i < answersIndices.Count; i++)
-			{
-				if (answersIndices[i] == questions[i].AnswerIndex)
-					sum += 1;
-			}
-			return sum;
-		}
+	}
+
 }

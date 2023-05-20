@@ -12,19 +12,21 @@
 	<div>
 		@foreach (QuestionModel question in questions)
 		{
-			<div class="editable-question">
-				<p>Id : @question.Id</p>
-				<p>Question : @question.Question</p>
-				<p>
-					Answers:
-					@foreach(string s in question.Answers)
-					{
-						<p>@s</p>
-					}
-				</p>
-				<p>Correct Answer : @question.Answers[question.AnswerIndex]</p>
-				<p>Contributor : @question.Contributor</p>
-			</div>
+			<form>
+				<div class="editable-question">
+					<textarea>Id : @question.Id</textarea>
+					<textarea>Question : @question.Question</textarea>
+					<textarea>
+						Answers:
+						@foreach (string s in question.Answers)
+						{
+						<textarea>@s</textarea>
+						}
+					</textarea>
+					<textarea>Correct Answer : @question.Answers[question.AnswerIndex]</textarea>
+					<textarea>Contributor : @question.Contributor</textarea>
+				</div>
+			</form>
 		}
 	</div>
 </div>

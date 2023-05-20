@@ -23,5 +23,32 @@ namespace QuizMaster.Services
 					PropertyNameCaseInsensitive = true
 				});
 		}
+		public void AddRating(string questionId, int rating)
+		{
+			var questions = GetQuestions();
+
+			var query = questions.First(x => x.Id == questionId);
+			if (query.Ratings == null)
+			{
+				query.Ratings = new int[] { rating };
+			}
+			else
+			{
+				var ratings = query.Ratings.ToList();
+				ratings.Add(rating);
+				query.Ratings = ratings.ToArray();
+			}
+
+			using var outputStream = File.OpenWrite(JsonFileName);
+
+			JsonSerializer.Serialize(
+				new Utf8JsonWriter(outputStream, new JsonWriterOptions
+				{
+					SkipValidation = true,
+					Indented = true
+				}),
+				questions
+			);
+		}
 	}
 }
