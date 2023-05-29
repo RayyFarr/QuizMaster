@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Components.Web
-
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.Extensions.Logging
 @using QuizMaster.Models
 @using QuizMaster.Services
 
@@ -9,37 +10,49 @@
 	SetQuestions();
 }
 <div class="editor">
-	<div>
-		@foreach (QuestionModel question in questions)
-		{
-			<form>
+	@for(int i = 0; i < questions.Length; i++)
+	{
+		<div class="editable-question">
+			<h3>Question + @questions[i].Question</h3>
+			<button @onclick="(() => EditQuestion(questions[i].Id))">Edit</button>
+		</div>
+	}
+	@if (question != null)
+	{
+		<div>
+
+			QuestionModel question = questions[i];
+			<EditForm Model="@question" OnSubmit="@Submit">
+				<DataAnnotationsValidator />
 				<div class="editable-question">
-					<h3>Id :</h3>
-					<textarea>@question.Id</textarea>
 					<h3>Question :</h3>
-					<textarea>@question.Question</textarea>
+					<InputText id="id" @bind-Value="question.Question" />
+
 					<h3>Answers :</h3>
-					@foreach (string s in question.Answers)
+					@for (int j = 0; j < question.Answers.Length; j++)
 					{
-						<textarea>@s</textarea>
+						string s = question.Answers[j];
+						<InputTextArea id="@("question" + j)" @bind-Value="s" />
 					}
-					<h3>Add a question :</h3>
-					<textarea></textarea>
-					<h3>Correct Answer Index :</h3>
-					<textarea >@question.AnswerIndex</textarea>
-					<h3>Contributor :</h3>
-					<textarea>@question.Contributor</textarea>
+					<button type="submit">Submit</button>
 				</div>
-			</form>
-		}
-	</div>
+			</EditForm>
+		</div>
+	}
 </div>
 
 @code {
-	IEnumerable<QuestionModel> questions;
-
+	QuestionModel[] questions;
+	QuestionModel question;
 	void SetQuestions()
 	{
 		questions = QuestionService.GetQuestions();
+	}
+	void Submit()
+	{
+	}
+	void EditQuestion(string id)
+	{
+		
 	}
 }
