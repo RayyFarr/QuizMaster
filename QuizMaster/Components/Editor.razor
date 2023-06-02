@@ -11,7 +11,7 @@
 }
 <div class="editor">
 	@for(int i = 0; i < questions.Length; i++)
-	{
+	{ 
 		<div class="editable-question">
 			<h3>Question + @questions[i].Question</h3>
 			<button @onclick="(() => EditQuestion(questions[i].Id))">Edit</button>

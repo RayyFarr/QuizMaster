@@ -12,7 +12,7 @@
 	<div class="content">
 		@if(Model.quiz)
 			@(await Html.RenderComponentAsync<Quiz>(RenderMode.ServerPrerendered))
-		@if (Model.editor)
+		else if(Model.editor)
 			@(await Html.RenderComponentAsync<Editor>(RenderMode.ServerPrerendered))
 	</div>
 </div>

@@ -99,7 +99,7 @@
 				}
 				</span>
 			</span>
-			<button @onclick="Submit">Submit</button>
+			<button @onclick="e => Submit()">Submit</button>
 		</div>
 	</div>
 }
@@ -139,7 +139,7 @@ else
 	bool answered = false;
 	int hints = 3;
 	bool showHint = false;
-	bool finished;
+	bool finished = false;
 	void SetQuestion()
 	{
 		voted = false;
