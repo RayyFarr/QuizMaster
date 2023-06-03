@@ -9,30 +9,34 @@
 @{
 	SetQuestions();
 }
-<div class="editor">
-	@for(int i = 0; i < questions.Length; i++)
-	{ 
-		<div class="editable-question">
-			<h3>Question + @questions[i].Question</h3>
-			<button @onclick="(() => EditQuestion(questions[i].Id))">Edit</button>
-		</div>
+<div class="editor @(question == null)">
+	@if (question == null)
+	{
+		@for (int i = 0; i < questions.Length; i++)
+		{
+			int index = i;
+			<div class="editable-question">
+				<h3>Question + @questions[index].Question</h3>
+				<button @onclick="(e => EditQuestion(questions[index].Id))">Edit</button>
+			</div>
+		}
 	}
 	@if (question != null)
 	{
-		<div>
-
-			QuestionModel question = questions[i];
+		<div class="editing-question">
 			<EditForm Model="@question" OnSubmit="@Submit">
 				<DataAnnotationsValidator />
-				<div class="editable-question">
+				<div>
 					<h3>Question :</h3>
 					<InputText id="id" @bind-Value="question.Question" />
 
 					<h3>Answers :</h3>
-					@for (int j = 0; j < question.Answers.Length; j++)
+					@for(int i = 0; i < question.Answers.Length; i++)
 					{
-						string s = question.Answers[j];
-						<InputTextArea id="@("question" + j)" @bind-Value="s" />
+						int index = i;
+
+						<div id="@("answer"+index)"/>
+						Console.WriteLine(index);
 					}
 					<button type="submit">Submit</button>
 				</div>
@@ -53,6 +57,6 @@
 	}
 	void EditQuestion(string id)
 	{
-		
+		question = questions.First(x => x.Id == id);
 	}
 }
