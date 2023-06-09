@@ -3,7 +3,6 @@
 @using Microsoft.Extensions.Logging
 @using QuizMaster.Models
 @using QuizMaster.Services
-
 @inject JsonFileQuestionService QuestionService
 
 @{
@@ -16,7 +15,7 @@
 		{
 			int index = i;
 			<div class="editable-question">
-				<h3>Question + @questions[index].Question</h3>
+				<h3>Question : @questions[index].Question</h3>
 				<button @onclick="(e => EditQuestion(questions[index].Id))">Edit</button>
 			</div>
 		}
@@ -24,21 +23,17 @@
 	@if (question != null)
 	{
 		<div class="editing-question">
-			<EditForm Model="@question" OnSubmit="@Submit">
+			<EditForm Model="question" OnSubmit="HandleSubmit">
 				<DataAnnotationsValidator />
-				<div>
-					<h3>Question :</h3>
+				<div class="editing-question content">
+					<label for="id">Question :</label>
 					<InputText id="id" @bind-Value="question.Question" />
 
 					<h3>Answers :</h3>
-					@for(int i = 0; i < question.Answers.Length; i++)
-					{
-						int index = i;
-
-						<div id="@("answer"+index)"/>
-						Console.WriteLine(index);
-					}
+				</div>
+				<div class="editing-question footer">
 					<button type="submit">Submit</button>
+					<button type="button" @onclick="e => question = null"  style="background-color:#c23616">Return</button>
 				</div>
 			</EditForm>
 		</div>
@@ -52,11 +47,19 @@
 	{
 		questions = QuestionService.GetQuestions();
 	}
-	void Submit()
+	void HandleSubmit()
 	{
+		for (int i = 0; i < questions.Length; i++)
+			if (questions[i].Id == question.Id) questions[i].Question = question.Question;
+		QuestionService.UpdateDataBase(questions);
+		SetQuestions();
 	}
 	void EditQuestion(string id)
 	{
-		question = questions.First(x => x.Id == id);
+		var ques = questions.First(x => x.Id == id);
+		if (ques != null)
+		{
+			question = ques;
+		}
 	}
 }

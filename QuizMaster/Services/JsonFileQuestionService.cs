@@ -23,6 +23,19 @@ namespace QuizMaster.Services
 					PropertyNameCaseInsensitive = true
 				});
 		}
+		public void UpdateDataBase(QuestionModel[] questions)
+		{
+			using var outputStream = File.Create(JsonFileName);
+			
+			JsonSerializer.Serialize(
+				new Utf8JsonWriter(outputStream, new JsonWriterOptions
+				{
+					SkipValidation = true,
+					Indented = true
+				}),
+				questions
+			);
+		}
 		public void AddRating(string questionId, int rating)
 		{
 			var questions = GetQuestions();
