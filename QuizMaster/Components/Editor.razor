@@ -11,29 +11,48 @@
 <div class="editor @(question == null)">
 	@if (question == null)
 	{
+	
 		@for (int i = 0; i < questions.Length; i++)
 		{
 			int index = i;
 			<div class="editable-question">
 				<h3>Question : @questions[index].Question</h3>
-				<button @onclick="(e => EditQuestion(questions[index].Id))">Edit</button>
+				<button @onclick="e => EditQuestion(questions[index].Id)">Edit</button>
 			</div>
 		}
 	}
-	@if (question != null)
+	else
 	{
 		<div class="editing-question">
 			<EditForm Model="question" OnSubmit="HandleSubmit">
 				<DataAnnotationsValidator />
 				<div class="editing-question content">
 					<label for="id">Question :</label>
-					<InputText id="id" @bind-Value="question.Question" />
-
+					<InputText id="id" @bind-Value="question.Question" @oninput="e => changed = true" />
 					<h3>Answers :</h3>
+					@for(int i = 0;i<questionAnswers.Length;i++)
+					{
+						int index = i;
+						<InputText class="answers" @bind-Value="questionAnswers[index].answer" @oninput="e => changed = true" />
+					}
+
+					<label for="correctAnswerIndex">Correct Index:</label>
+					<InputNumber id="correctAnswerIndex" @bind-Value="question.AnswerIndex" @oninput="e => changed = true"/>
+
+					<label for="contributor">Contributor :</label>
+					<InputText id="contributor" @bind-Value="question.Contributor" @oninput="e => changed = true" />
+
+					@if(true){
+						string c = "";
+						if (changed) c = "active";
+						<div class="not-saved @c">Changes Not Saved</div>
+					}
+
+
 				</div>
 				<div class="editing-question footer">
 					<button type="submit">Submit</button>
-					<button type="button" @onclick="e => question = null"  style="background-color:#c23616">Return</button>
+					<button type="button" @onclick="Return"  style="background-color:#c23616">Return</button>
 				</div>
 			</EditForm>
 		</div>
@@ -41,25 +60,50 @@
 </div>
 
 @code {
-	QuestionModel[] questions;
-	QuestionModel question;
-	void SetQuestions()
-	{
-		questions = QuestionService.GetQuestions();
-	}
-	void HandleSubmit()
-	{
-		for (int i = 0; i < questions.Length; i++)
-			if (questions[i].Id == question.Id) questions[i].Question = question.Question;
+		QuestionModel[] questions;
+		QuestionModel question;
+		QuestionAnswer[] questionAnswers;
+		bool changed = false;
+		void SetQuestions()
+		{
+			questions = QuestionService.GetQuestions();
+		}
+		void HandleSubmit()
+		{
+			changed = false;
+			if (question.AnswerIndex < 0) question.AnswerIndex = 0;
+			if (question.AnswerIndex >= question.Answers.Length) question.AnswerIndex = question.Answers.Length-1;
+			for (int i = 0; i < questions.Length; i++)
+				if (questions[i].Id == question.Id) {
+					questions[i] = question;
+					for (int j = 0; j < question.Answers.Length; j++)
+					{
+						if(questionAnswers[j].answer != ""){
+							questions[i].Answers[j] = questionAnswers[j].answer;
+						}
+						else {
+							//List<string> s = questions[i].Answers.ToList();
+							//s.Remove(questions[i].Answers[j]);
+							//questions[i].Answers = s.ToArray();
+						}
+			}
 		QuestionService.UpdateDataBase(questions);
 		SetQuestions();
 	}
+	void SetQuestionAnswers()
+	{
+		questionAnswers = new QuestionAnswer[question.Answers.Length];
+		for (int i = 0; i < questionAnswers.Length; i++)
+			questionAnswers[i] = new QuestionAnswer(question.Answers[i]);
+	}
 	void EditQuestion(string id)
 	{
-		var ques = questions.First(x => x.Id == id);
-		if (ques != null)
-		{
-			question = ques;
-		}
+		question = questions.First(x => x.Id == id);
+		SetQuestionAnswers();
+	}
+	void Return()
+	{
+		question = null;
+		changed = false;
 	}
 }

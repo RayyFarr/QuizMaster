@@ -12,6 +12,7 @@ namespace QuizMaster.Models
 		public string? Contributor { get; set; }
 		public int[]? Ratings { get; set; }
 
+
 		public override string ToString() => JsonSerializer.Serialize(this);
 	}
 }

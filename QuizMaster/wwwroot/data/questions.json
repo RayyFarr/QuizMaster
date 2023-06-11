@@ -23,9 +23,9 @@
       "Intermediate-Level",
       "High-Level",
       "Assembly-Level",
-      "Human-Friendly"
+      "Machine-Level"
     ],
-    "AnswerIndex": 2,
+    "AnswerIndex": 1,
     "Hint": "The answers are not in order",
     "Contributor": "Farsit",
     "Ratings": null
@@ -101,7 +101,7 @@
   },
   {
     "Id": "J3S87D",
-    "Question": "Which of the following gives the highest dose of radiation?",
+    "Question": "Which of the following produces the highest dose of radiation?",
     "Answers": [
       "Being an astronaut",
       "Staying at Chernobyl Exclusion Zone",

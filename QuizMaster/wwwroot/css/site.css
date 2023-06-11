@@ -246,6 +246,12 @@ body {
         margin-top: 1rem;
         font-size: 2rem;
     }
+    .editing-question input{
+        margin:1rem 0;
+    }
+    .editing-question input.answers {
+        height:0.5rem;
+    }
     .editing-question button {
         background-color: #4cd137;
         width:49%;
@@ -259,6 +265,21 @@ body {
         border-radius: 0 0 5px 5px;
         background-color: #40739e;
         padding: 1rem;
+    }
+    .editing-question .not-saved {
+        border-radius:5px;
+        padding:1rem;
+        text-align:center;
+        font-size:0rem;
+        background-color: #e84118;
+        width:0%;
+        height:4rem;
+        transition:0.25s ease-in-out;
+    }
+    .editing-question .not-saved.active{
+        transition:0.25s ease-in-out;
+        font-size:1.5rem;
+        width:100%;
     }
 
 .header {
