@@ -14,7 +14,7 @@
 		<div class="quiz-header">
 			<div class="question">@currentQuestion.Question</div>
 			<div class="circle-container">
-				@for (int i = questions.Length - 1; i >= 0; i--)
+				@for (int i = questions.Count - 1; i >= 0; i--)
 				{
 					string c = "";
 					if (i < answersIndices.Count)
@@ -69,6 +69,13 @@
 				@currentQuestion.Hint
 			</div>
 		}
+
+		<div class="explanation @answered">
+			<h3>Explanation:</h3>
+			<p>
+				@currentQuestion.Explanation
+			</p>
+		</div>
 	</div>
 	<div class="quiz-footer">
 		<div class="quiz-footer-div">
@@ -107,9 +114,9 @@ else
 {
 	<div class="quiz-div">
 		<div class="quiz-header">
-			<div class="question">You were able to do: @CorrectAnswers() Out of @questions.Length</div>
+			<div class="question">You were able to do: @CorrectAnswers() Out of @questions.Count</div>
 			<div class="circle-container">
-				@for (int i = questions.Length - 1; i >= 0; i--)
+				@for (int i = questions.Count - 1; i >= 0; i--)
 				{
 					string c = "";
 					if (i < answersIndices.Count)
@@ -132,7 +139,7 @@ else
 
 @code {
 	int currentQuestionIndex = 0;
-	QuestionModel[]? questions;
+	List<QuestionModel> questions;
 	QuestionModel? currentQuestion;
 	List<int> answersIndices = new List<int>();
 	int selectedAnswer = 0;
@@ -167,7 +174,7 @@ else
 		if (!answered) return;
 		answered = false;
 		showHint = false;
-		if (answersIndices.Count == questions.Length)
+		if (answersIndices.Count == questions.Count)
 		{
 			finished = true;
 			return;

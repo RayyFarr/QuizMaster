@@ -9,6 +9,7 @@ namespace QuizMaster.Models
 		public string[]? Answers { get; set; }
 		public int AnswerIndex { get; set; }
 		public string? Hint { get; set; }
+		public string? Explanation { get; set; }
 		public string? Contributor { get; set; }
 		public int[]? Ratings { get; set; }
 

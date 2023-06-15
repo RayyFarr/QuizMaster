@@ -9,9 +9,9 @@ body {
 .quiz-div {
     color: #f5f6fa;
     background-color: #2f3640;
-    height: 80vh;
     width: 70%;
-    padding: 40px;
+
+    padding: 1.25rem;
     border-radius: 10px 10px 0 0;
     font-family: Bahnschrift;
 }
@@ -70,6 +70,19 @@ body {
     background-color: #192a56;
     border-radius: 0 0 10px 10px;
     font-size: 1.5rem;
+}
+.explanation {
+    background-color: #44bd32;
+    color:black;
+    padding:1rem;
+    border-radius:0.5rem;
+    margin-top:1rem;
+    opacity:0;
+    transition:0.5s ease-in-out; 
+}
+.explanation.True{
+    transition:0.5s ease-in-out;
+    opacity:1;
 }
 
 .quiz-footer {
@@ -141,7 +154,6 @@ body {
     min-height: 50px;
     background-color: #44bd32;
     font-size: 20px;
-    left: 50%;
     transition: 0.2s;
 }
 
@@ -194,12 +206,13 @@ body {
     width: 100%;
     padding: 10px;
     border-radius: 10px;
-    background-color: #353b48;
+    background-color: #2f3640;
 }
 
     .editor.True {
         display: grid;
-        grid-template-columns: auto auto auto;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        
     }
 
     .editor input {
@@ -211,19 +224,43 @@ body {
         border-radius: 5px;
         padding: 1rem;
     }
+    .editor textarea {
+        width: 100%;
+        font-size: 1.5rem;
+        border: groove;
+        background-color: #2f3640;
+        color: #f5f6fa;
+        border-radius: 5px;
+        padding: 1rem;
+
+    }
 
 
 .editable-question {
     color: #FFFFFF;
-    padding: 20px;
-    margin: 10px;
+    padding: 1rem;
+    margin: 0.7rem;
     min-height: 100px;
     border-radius: 10px;
-    background-color: #7f8fa6;
+    background-color: #487eb0;
 }
-
+.editable-question h3{
+    font-size:1.35rem;
+}
+    .editable-question.add {
+        color: black;
+        background-color: #fbc531;
+        font-size:2rem;
+        transition:0.25s ease-out;
+    }
+        .editable-question.add:hover {
+            font-size: 4rem;
+        }
     .editable-question button {
-        width: 100%;
+        width: 3rem;
+        height:3rem;
+        text-align:center;
+      
         background-color: #fbc531;
     }
 
@@ -235,6 +272,7 @@ body {
     padding: 1rem;
     color: #FFFFFF;
     background-color: #273c75;
+    width:100%;
 }
 
     .editing-question.content {
@@ -282,6 +320,12 @@ body {
         width:100%;
     }
 
+.editable-question button.remove-question{
+    background-color: #e84118;
+}
+    .editable-question button.remove-question:hover {
+        background-color: #c23616;
+    }
 .header {
     width: 100%;
     color: #f5f6fa;
@@ -371,6 +415,7 @@ button {
     .quiz-footer-div p {
         font-size: 1.2rem;
     }
+
 }
 
 @media(max-width:768px) {
@@ -380,6 +425,12 @@ button {
 
     .quiz-footer {
         width: 100%;
+    }
+    .editor.True{
+        display:block;
+    }
+    .editable-question.add{
+        width:95%;
     }
 }
 

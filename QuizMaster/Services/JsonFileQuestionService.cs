@@ -14,16 +14,16 @@ namespace QuizMaster.Services
 
 		private string JsonFileName => Path.Combine(WebHostEnvironment.WebRootPath, "data", "questions.json");
 
-		public QuestionModel[] GetQuestions()
+		public List<QuestionModel> GetQuestions()
 		{
 			using var jsonFileReader = File.OpenText(JsonFileName);
 			return JsonSerializer.Deserialize<QuestionModel[]>(jsonFileReader.ReadToEnd(),
 				new JsonSerializerOptions
 				{
 					PropertyNameCaseInsensitive = true
-				});
+				}).ToList();
 		}
-		public void UpdateDataBase(QuestionModel[] questions)
+		public void UpdateDataBase(List<QuestionModel> questions)
 		{
 			using var outputStream = File.Create(JsonFileName);
 			

@@ -8,18 +8,22 @@
 @{
 	SetQuestions();
 }
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
 <div class="editor @(question == null)">
 	@if (question == null)
 	{
-	
-		@for (int i = 0; i < questions.Length; i++)
+
+		@for (int i = 0; i < questions.Count; i++)
 		{
 			int index = i;
 			<div class="editable-question">
 				<h3>Question : @questions[index].Question</h3>
-				<button @onclick="e => EditQuestion(questions[index].Id)">Edit</button>
+				<button class="edit-question" @onclick="e => EditQuestion(questions[index].Id)"><i class="fa fa-pencil"></i></button>
+				<button class="remove-question"@onclick="e => RemoveQuestion(questions[index])"><i class="fa fa-trash"></i></button>
 			</div>
 		}
+		<button class="editable-question add"@onclick="AddQuestion"><i class="fa fa-plus"></i></button>
 	}
 	else
 	{
@@ -30,14 +34,24 @@
 					<label for="id">Question :</label>
 					<InputText id="id" @bind-Value="question.Question" @oninput="e => changed = true" />
 					<h3>Answers :</h3>
-					@for(int i = 0;i<questionAnswers.Length;i++)
+					@for(int i = 0;i<question.Answers.Length;i++)
 					{
 						int index = i;
 						<InputText class="answers" @bind-Value="questionAnswers[index].answer" @oninput="e => changed = true" />
 					}
+					
+					<label for="newAnswer">Add an answer: </label>
+					<InputText id="newAnswer" class="answers" @bind-Value="questionAnswers.Last().answer" @oninput="e => changed = true" />
+
 
 					<label for="correctAnswerIndex">Correct Index:</label>
 					<InputNumber id="correctAnswerIndex" @bind-Value="question.AnswerIndex" @oninput="e => changed = true"/>
+
+					<label for="hint">Hint:</label>
+					<InputText id="hint" @bind-Value="question.Hint" @oninput="e => changed = true" />
+
+					<label for="explanation">Explanation:</label>
+					<InputTextArea id="explanation" @bind-Value="question.Explanation" @oninput="e => changed = true" />
 
 					<label for="contributor">Contributor :</label>
 					<InputText id="contributor" @bind-Value="question.Contributor" @oninput="e => changed = true" />
@@ -50,6 +64,7 @@
 
 
 				</div>
+			
 				<div class="editing-question footer">
 					<button type="submit">Submit</button>
 					<button type="button" @onclick="Return"  style="background-color:#c23616">Return</button>
@@ -60,46 +75,78 @@
 </div>
 
 @code {
-		QuestionModel[] questions;
-		QuestionModel question;
-		QuestionAnswer[] questionAnswers;
-		bool changed = false;
-		void SetQuestions()
+	List<QuestionModel>questions;
+	QuestionModel question;
+	List<QuestionAnswer> questionAnswers;
+	bool changed = false;
+	Random rnd = new Random();
+	void SetQuestions()
+	{
+		questions = QuestionService.GetQuestions();
+	}
+	void HandleSubmit()
+	{
+		changed = false;
+		Console.WriteLine(question.Explanation);
+		if (question.AnswerIndex < 0) question.AnswerIndex = 0;
+		if (question.AnswerIndex >= question.Answers.Length) question.AnswerIndex = question.Answers.Length-1;
+		for (int j = 0; j < question.Answers.Length; j++)
 		{
-			questions = QuestionService.GetQuestions();
-		}
-		void HandleSubmit()
-		{
-			changed = false;
-			if (question.AnswerIndex < 0) question.AnswerIndex = 0;
-			if (question.AnswerIndex >= question.Answers.Length) question.AnswerIndex = question.Answers.Length-1;
-			for (int i = 0; i < questions.Length; i++)
-				if (questions[i].Id == question.Id) {
-					questions[i] = question;
-					for (int j = 0; j < question.Answers.Length; j++)
-					{
-						if(questionAnswers[j].answer != ""){
-							questions[i].Answers[j] = questionAnswers[j].answer;
-						}
-						else {
-							//List<string> s = questions[i].Answers.ToList();
-							//s.Remove(questions[i].Answers[j]);
-							//questions[i].Answers = s.ToArray();
-						}
+			if (questionAnswers[j].answer != "")
+			{
+				question.Answers[j] = questionAnswers[j].answer;
 			}
+			else
+			{
+				List<string> s = question.Answers.ToList();
+				s.Remove(question.Answers[j]);
+				question.Answers = s.ToArray();
+			}
+		}
+		Console.WriteLine(questionAnswers.Last().answer);
+		if (questionAnswers.Last().answer != "")
+		{
+			var answers = question.Answers.ToList();
+			answers.Add(questionAnswers.Last().answer);
+			question.Answers = answers.ToArray();
+		}
+		for (int i = 0; i < questions.Count; i++) if (questions[i].Id == question.Id) questions[i] = question;
+
 		QuestionService.UpdateDataBase(questions);
+		EditQuestion(question.Id);
 		SetQuestions();
 	}
 	void SetQuestionAnswers()
 	{
-		questionAnswers = new QuestionAnswer[question.Answers.Length];
-		for (int i = 0; i < questionAnswers.Length; i++)
-			questionAnswers[i] = new QuestionAnswer(question.Answers[i]);
+		questionAnswers = new List<QuestionAnswer>();
+		for (int i = 0; i < question.Answers.Length; i++)
+			questionAnswers.Add(new QuestionAnswer(question.Answers[i]));
+		questionAnswers.Add(new QuestionAnswer(""));
 	}
 	void EditQuestion(string id)
 	{
 		question = questions.First(x => x.Id == id);
 		SetQuestionAnswers();
+	}
+	void AddQuestion()
+	{
+	Reset:
+		int uniqueId = rnd.Next(10000000, 99999999);
+		for(int i = 0;i < questions.Count; i++)
+		{
+			if (questions[i].Id == uniqueId.ToString()) goto Reset;
+		}
+		var q = new QuestionModel();
+		q.Id = uniqueId.ToString();
+		q.Answers = new string[4];
+		questions.Add(q);
+		QuestionService.UpdateDataBase(questions);
+		SetQuestions();
+	}
+	void RemoveQuestion(QuestionModel ques)
+	{
+		questions.Remove(ques);
+		QuestionService.UpdateDataBase(questions);
 	}
 	void Return()
 	{
